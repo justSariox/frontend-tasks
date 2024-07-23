@@ -25,6 +25,29 @@ const ChildComponent = memo(({ makeLog }) => (
 ));
 ```
 
+## solution
+
+1. Added a useCallback for the makeLog function to save a link to the function in order to avoid unnecessary re-renders
+
+```
+import { Fragment, memo, useCallback } from 'react';
+
+const MainComponent = () => {
+	const makeLog = useCallback(() => console.log('hi from MainComponent'), []);
+
+	return (
+		<Fragment>
+			<ChildComponent makeLog={makeLog} />
+		</Fragment>
+	);
+};
+
+// memoized component
+const ChildComponent = memo(({ makeLog }) => (
+	<button onClick={makeLog}>say Hi from ChildComponent</button>
+));
+```
+
 ## task_2
 Rewrite this part of code using class-based components.
 
@@ -41,6 +64,31 @@ const FunctionalCounter = ({ count }) => {
 		<div>Count: {count}</div>
 	);
 };
+```
+
+## solution
+
+```
+type Props = {
+  count: number,
+  
+}
+
+export class ClassCounter extends React.Component<Props, any> {
+   constructor(props) {
+    super(props)
+  }
+
+   componentDidUpdate(prevProps) {
+	if (this.props.count !== prevProps.count) {
+	    console.log(`Count: ${this.props count}`)
+	}
+   }
+
+   render() {
+	return <div>{this.props.count}</div>
+   }
+}
 ```
 
 ## task_3
@@ -68,6 +116,9 @@ const inputData: TransformedData[] = [
 ];
 ```
 
+
+
+
 ## task_4
 Define TypeScript types from the previous task.
 Use union of tuples to define UserData type.
@@ -80,5 +131,27 @@ type TransformedData = {
 };
 
 type TransformDataFunction = ...
+```
+
+## Solution task_3 & task_ 4
+
+```
+type UserData = [string, string | number];
+type UserArray = UserData[];
+
+type TransformedData = {
+    label: string;
+    value: number;
+};
+
+type TransformDataFunction = (data: UserArray[]) => TransformedData[];
+
+
+const transformData: TransformDataFunction = (data) => {
+    return data.map((item) => {
+        const { id, name, age } = item.reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+        return { label: `${name}, ${age}`, value: id };
+    });
+};
 ```
 
